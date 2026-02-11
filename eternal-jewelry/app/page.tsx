@@ -1,63 +1,101 @@
 import { client } from "../src/lib/contentful";
+import { ProductCard } from "../src/components/ProductCard";
+import { Section } from "@/src/components/Section";
 
 export default async function Home() {
   const products = await client.getEntries({
     content_type: "producto",
   });
 
+  const byCategory = (category: string) =>
+    products.items.filter(
+      (p: any) => p.fields.categoriaProducto === category
+    );
+
+  const promociones = products.items.filter(
+    (p: any) => p.fields.promocion === true
+  );
+
   return (
     <>
-      <h2 className="text-3xl mb-8 tracking-wide">
-        Colección destacada
-      </h2>
+      {/* HERO */}
+      <section className="py-20 text-center">
+        <h1 className="text-5xl mb-6 text-[#72838B]">
+          Eternal Jewelry
+        </h1>
+        <p className="max-w-2xl mx-auto text-lg text-[#72838B]">
+          Joyería en acero inoxidable, baños de oro y plata S925.
+          Elegancia que perdura.
+        </p>
+      </section>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {products.items.map((product: any) => {
-          const image = product.fields.imagenProducto?.[0];
-          const imageUrl = image
-            ? `https:${image.fields.file.url}`
-            : null;
+      {/* ANILLOS */}
+      <Section
+        id="anillos"
+        title="Anillos"
+        products={byCategory("anillos")}
+      />
 
-          return (
-            <div
-              key={product.sys.id}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition p-4"
-            >
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt={product.fields.nombreProducto}
-                  className="h-64 w-full object-cover rounded-lg mb-4"
-                />
-              ) : (
-                <div className="h-64 bg-gray-100 rounded-lg mb-4 flex items-center justify-center text-gray-400">
-                  Sin imagen
-                </div>
-              )}
+      {/* ARETES */}
+      <Section
+        id="aretes"
+        title="Aretes"
+        products={byCategory("aretes")}
+        gray
+      />
 
-              <h3 className="text-lg mb-1">
-                {product.fields.nombreProducto}
-              </h3>
+      {/* COLLARES */}
+      <Section
+        id="collares"
+        title="Collares"
+        products={byCategory("collares")}
+      />
 
-              {product.fields.promocion ? (
-                <>
-                  <p className="text-sm line-through text-gray-400">
-                    ${product.fields.precioProducto}
-                  </p>
-                  <p className="text-lg text-[#D4AF37] font-medium">
-                    ${product.fields.precioPromocional}
-                  </p>
-                </>
-              ) : (
-                <p className="text-lg">
-                  ${product.fields.precioProducto}
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      {/* PULSERAS */}
+      <Section
+        id="pulseras"
+        title="Pulseras"
+        products={byCategory("pulseras")}
+        gray
+      />
+
+      {/* PROMOCIONES */}
+      <Section
+        id="promociones"
+        title="Promociones"
+        products={promociones}
+      />
+
+      {/* NOSOTROS */}
+      <section id="nosotros" className="py-20 bg-[#F9F9F9] text-center">
+        <h2 className="text-3xl mb-6 text-[#72838B]">
+          Sobre Nosotros
+        </h2>
+        <p className="max-w-3xl mx-auto text-[#72838B]">
+          Eternal Jewelry es una experiencia que conecta elegancia y
+          permanencia. Creamos piezas únicas para acompañarte siempre.
+        </p>
+      </section>
+
+      {/* UBICACIÓN */}
+      <section id="ubicacion" className="py-20 text-center">
+        <h2 className="text-3xl mb-4 text-[#72838B]">
+          Ubicación
+        </h2>
+        <p className="text-[#72838B]">
+          Calle Principal 123, Ciudad
+        </p>
+      </section>
+
+      {/* CONTACTO */}
+      <section id="contacto" className="py-20 bg-[#F9F9F9] text-center">
+        <h2 className="text-3xl mb-6 text-[#72838B]">
+          Contáctanos
+        </h2>
+        <p className="text-[#72838B]">
+          Instagram: @_eternal_jewelry
+        </p>
+      </section>
     </>
   );
 }
-
